@@ -6,8 +6,8 @@ import(
 	"log"
 )
 
-func LoadWordlist() []string{
-	file, err := os.Open("seclist.txt")
+func LoadWordlist(wordFile string) []string{
+	file, err := os.Open(wordFile)
 	if err != nil {
 		log.Fatal(err)
 	}

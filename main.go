@@ -1,19 +1,32 @@
 package main 
 
 import(
-
-	"github.com/timothysunny/DirectFuzzGo/internal/output"
-	"github.com/timothysunny/DirectFuzzGo/internal/http"
-	"github.com/timothysunny/DirectFuzzGo/internal/input"
+	"flag"
+	"strings"
+	"github.com/timothysunny/DirectFuzzGo/pkg/output"
+	"github.com/timothysunny/DirectFuzzGo/pkg/http"
+	"github.com/timothysunny/DirectFuzzGo/pkg/input"
 )
 
 
 func main(){
-	url := "http://127.0.0.1:5000/"
+	urlFlag := flag.String("u", "", "the target URL")
+	wordFlag := flag.String("w", "", "Wordlist")
 
-	wordlist := input.LoadWordlist()
+	flag.Parse()
+
+	url := *urlFlag
+	wordListFile := *wordFlag
+
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://"){
+		url = "http://" + url
+	}
+
+	wordlist := input.LoadWordlist(wordListFile)
 	output.PrintAscii(url)
+
 	for _, word := range wordlist{
 		http.RequestDirectory(url, word)
+
 	}
 }
